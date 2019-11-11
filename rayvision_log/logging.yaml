@@ -1,0 +1,27 @@
+# Default logging configuration.
+logging:
+  loggers:
+    '':
+      level: DEBUG
+      handlers:
+        - file
+        - console
+  version: 1
+  formatters:
+    file:
+      format: '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+    console:
+      format: '%(levelname)-8s: %(name)s: %(message)s'
+  handlers:
+    file:
+      class: concurrent_log_handler.ConcurrentRotatingFileHandler
+      formatter: file
+      level: DEBUG
+      filename: ''
+      backupCount: 7
+      maxBytes: 1024*1024*5
+      delay: true
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: console
