@@ -1,11 +1,1 @@
-rayvision_log
-=============
-Rayvision logging.
-
-```python
-import logging
-from rayvision_log import init_logger
-
-init_logger("rayvision_api")
-LOG = logging.getLogger("rayvision_api")
-```
+#### 详细的使用说明请参考[Renderbus SDK](https://renderbus.readthedocs.io/zh/latest/index.html)
