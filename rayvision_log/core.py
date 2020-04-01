@@ -85,6 +85,7 @@ def set_up_logger(app_name, log_config):
             "RAYVISION_LOG_ROOT", user_log_dir(app_name, appauthor="RayVision")
         )
         filename = os.path.join(root, getuser(), "{}.log".format(getfqdn()))
+        logging.info("LOG FILENAME PATH ==> %s" % filename)
         log_config["handlers"]["file"]["filename"] = filename
         folder = os.path.dirname(filename)
         if not os.path.isdir(folder):

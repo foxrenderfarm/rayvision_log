@@ -10,12 +10,12 @@ def parse_requirements(filename):
 
 setup(
     name="rayvision_log",
-    author="Rayvision",
+    author="Shenzhen Rayvision Technology Co., Ltd",
     author_email="developer@rayvision.com",
-    url="",
+    url="https://github.com/renderbus/rayvision_log",
     package_dir={"": "."},
     packages=find_packages("."),
-    description="",
+    description="A Python-based API for Using Renderbus cloud rendering service.",
     entry_points={},
     install_requires=list(parse_requirements("requirements.txt")),
     classifiers=[
@@ -25,6 +25,5 @@ setup(
     ],
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    tests_require=[],
     package_data={"rayvision_log": ["*.yaml"]},
 )
