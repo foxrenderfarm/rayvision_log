@@ -1,3 +1,4 @@
-appdirs
-concurrent_log_handler
+appdirs==1.4.3
+concurrent-log-handler==0.9.16
 pyyaml>=5.1.2
+configparser==4.0.2
