@@ -52,6 +52,22 @@ def get_default_log_config():
         data = yaml.load(file_object, yaml.FullLoader)
     return data["logging"]
 
+def update_config(config):
+    """If python2.7.13 updates file.class
+
+    Args:
+        config (dict): logging config
+
+    Returns:
+        dict: logging config.
+
+    """
+    import sys
+    info = sys.version_info
+    ver = str(info.major) + "." + str(info.minor) + "." + str(info.micro)
+    if ver == "2.7.13":
+        config['handlers']['file']['class'] = 'logging.handlers.RotatingFileHandler'
+    return config
 
 def set_up_logger(app_name, log_config):
     """Set up loggers based on given name and configuration.
@@ -80,12 +96,13 @@ def set_up_logger(app_name, log_config):
 
     """
     log_config = deepcopy(log_config)
+    log_config = update_config(log_config)
     if log_config["handlers"].get("file"):
         root = os.getenv(
             "RAYVISION_LOG_ROOT", user_log_dir(app_name, appauthor="RayVision")
         )
         filename = os.path.join(root, getuser(), "{}.log".format(getfqdn()))
-        logging.info("LOG FILENAME PATH ==> %s" % filename)
+        print("filename: %s" % filename)
         log_config["handlers"]["file"]["filename"] = filename
         folder = os.path.dirname(filename)
         if not os.path.isdir(folder):
