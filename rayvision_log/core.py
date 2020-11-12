@@ -30,6 +30,9 @@ def init_logger(app_name):
     try:
         log_config = get_default_log_config()
         set_up_logger(app_name, log_config)
+    except ValueError:
+        set_up_logger(app_name, log_config, use_orginal=True)
+
     except Exception:  # pylint: disable=broad-except
         # Catch a broad exception here, since there's no reason logging setup
         # failing should crash a program.
@@ -53,7 +56,7 @@ def get_default_log_config():
     return data["logging"]
 
 def update_config(config):
-    """If python2.7.13 updates file.class
+    """Some python2 versions use native logging
 
     Args:
         config (dict): logging config
@@ -62,14 +65,10 @@ def update_config(config):
         dict: logging config.
 
     """
-    import sys
-    info = sys.version_info
-    ver = str(info.major) + "." + str(info.minor) + "." + str(info.micro)
-    if ver == "2.7.13":
-        config['handlers']['file']['class'] = 'logging.handlers.RotatingFileHandler'
+    config['handlers']['file']['class'] = 'logging.handlers.RotatingFileHandler'
     return config
 
-def set_up_logger(app_name, log_config):
+def set_up_logger(app_name, log_config, use_orginal=False):
     """Set up loggers based on given name and configuration.
 
     Example:
@@ -96,13 +95,13 @@ def set_up_logger(app_name, log_config):
 
     """
     log_config = deepcopy(log_config)
-    log_config = update_config(log_config)
+    if use_orginal:
+        log_config = update_config(log_config)
     if log_config["handlers"].get("file"):
         root = os.getenv(
             "RAYVISION_LOG_ROOT", user_log_dir(app_name, appauthor="RayVision")
         )
         filename = os.path.join(root, getuser(), "{}.log".format(getfqdn()))
-        print("filename: %s" % filename)
         log_config["handlers"]["file"]["filename"] = filename
         folder = os.path.dirname(filename)
         if not os.path.isdir(folder):
