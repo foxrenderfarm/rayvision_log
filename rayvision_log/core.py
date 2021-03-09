@@ -10,7 +10,7 @@ from appdirs import user_log_dir
 import yaml
 
 
-def init_logger(app_name):
+def init_logger(app_name, log_folder=None, log_name=None):
     """Initialize logging with our default configuration.
 
     An easier interface for artists to use to create loggers in their
@@ -26,12 +26,14 @@ def init_logger(app_name):
 
     Args:
         app_name (str): The application or package name for which to create a logger.
+        log_folder (str): Custom log save location.
+        log_name (str): Custom log file name.
     """
     try:
         log_config = get_default_log_config()
-        set_up_logger(app_name, log_config)
+        set_up_logger(app_name, log_config, log_folder=log_folder, log_name=log_name)
     except ValueError:
-        set_up_logger(app_name, log_config, use_orginal=True)
+        set_up_logger(app_name, log_config, use_orginal=True, log_folder=log_folder, log_name=log_name)
 
     except Exception:  # pylint: disable=broad-except
         # Catch a broad exception here, since there's no reason logging setup
@@ -68,7 +70,7 @@ def update_config(config):
     config['handlers']['file']['class'] = 'logging.handlers.RotatingFileHandler'
     return config
 
-def set_up_logger(app_name, log_config, use_orginal=False):
+def set_up_logger(app_name, log_config, use_orginal=False, log_folder=None, log_name=None):
     """Set up loggers based on given name and configuration.
 
     Example:
@@ -89,19 +91,28 @@ def set_up_logger(app_name, log_config, use_orginal=False):
     Args:
         app_name (str): Name of the application.
         log_config (dict): The configuration of the logger.
-
+        use_orginal (bool): Whether to use the built-in log handler.
+        log_folder (str): Custom log save location.
+        log_name (str): Custom log file name.
     References:
         https://pypi.org/project/ConcurrentLogHandler/
 
+    Returns:
+        log path
     """
     log_config = deepcopy(log_config)
     if use_orginal:
         log_config = update_config(log_config)
     if log_config["handlers"].get("file"):
-        root = os.getenv(
-            "RAYVISION_LOG_ROOT", user_log_dir(app_name, appauthor="RayVision")
-        )
-        filename = os.path.join(root, getuser(), "{}.log".format(getfqdn()))
+        if log_folder:
+            root = os.path.join(log_folder, app_name)
+            file_name = log_name if log_name else "{}.log".format(getfqdn())
+            filename = os.path.join(root, file_name)
+        else:
+            root = os.getenv(
+                "RAYVISION_LOG_ROOT", user_log_dir(app_name, appauthor="RayVision")
+            )
+            filename = os.path.join(root, getuser(), "{}.log".format(getfqdn()))
         log_config["handlers"]["file"]["filename"] = filename
         folder = os.path.dirname(filename)
         if not os.path.isdir(folder):
