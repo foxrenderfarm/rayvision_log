@@ -30,7 +30,7 @@ def test_init_logger():
                 "level": "DEBUG",
                 "filename": "",
                 "backupCount": 7,
-                "maxBytes": "1024*1024*5",
+                "maxBytes": 5242880,
                 "delay": True,
             }
         },

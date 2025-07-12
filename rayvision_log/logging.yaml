@@ -20,7 +20,7 @@ logging:
       level: DEBUG
       filename: ''
       backupCount: 7
-      maxBytes: 1024*1024*5
+      maxBytes: 5242880
       delay: true
     console:
       class: logging.StreamHandler
